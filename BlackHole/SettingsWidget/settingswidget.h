@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QCheckBox>
+#include <QSpinBox>
+#include <QMessageBox>
 
 #include <QDesktopWidget>
 
@@ -24,29 +26,31 @@ class SettingsWidget : public QWidget
 {
     Q_OBJECT
 
-//    const char *LOGIN = "login";
-//    const char *PASSWORD = "impfield";
-//    const char *LOCDIRENABLE = "localdirectoryenable";
-//    const char *LOCDIR = "localdirectory";
-
-    QLineEdit *loginLine,
+    QLineEdit *addressLine,
+              *loginLine,
               *pswrdLine,
               *locDir;
 
+    QSpinBox *portSpin;
+
     QCheckBox *useLocDir;
 
-    QPushButton *applyBut,
+    QPushButton *regBut,
+                *applyBut,
                 *cancelBut,
-                *regBut;
+                *setDefaultBut;
 
 public:
 
     SettingsWidget(QWidget *parent);
 
+    void setParamsFromSettings();
+
 public slots:
+    void on_regBut();
     void on_applyBut();
     void on_cancelBut();
-    void on_regBut();
+    void on_setDefaultBut();
     void on_locDirEnabled(bool checked);
 
 };

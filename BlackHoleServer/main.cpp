@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     {
         QCoreApplication a(argc, argv);
 
-        BHServer server(1024);
+        BHServer server(56565);
 
         return a.exec();
     }

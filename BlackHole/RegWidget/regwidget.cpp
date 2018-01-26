@@ -72,7 +72,13 @@ void RegWidget::on_regButClicked()  //TEMP
 
     s << Registration << loginLine->text() << passwordLine->text();
 
-    socket->connectToHost(QHostAddress::LocalHost, 1024);
+    QSettings settings(CONFILE, QSettings::IniFormat);
+
+    socket->connectToHost(//QHostAddress(settings.value(SERVERADDRESS, "127.0.0.1").toString()),
+                          QHostAddress::LocalHost,
+                          //settings.value(SERVERPORT, 56565).toInt()
+                          56565);
+    socket->tcpSocket()->waitForConnected();
 
     socket->sendData(req);
 }

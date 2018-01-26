@@ -14,8 +14,12 @@
 
 #include <QDesktopWidget>
 
+#include <QSettings>
+
 #include "../COMMON/socket.h"
 #include "../COMMON/commands.h"
+
+#include "../skeys.h"
 
 class RegWidget : public QWidget
 {

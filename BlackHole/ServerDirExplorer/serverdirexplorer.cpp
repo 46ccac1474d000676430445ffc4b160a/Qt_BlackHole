@@ -4,6 +4,7 @@ ServerDirExplorer::ServerDirExplorer(QWidget *parent)
     : QWidget(parent, Qt::Window)
 {
     socket = new Socket(this);
+    connect(socket, &Socket::dataReceived, this, &ServerDirExplorer::parseData);
 
 //list widget
     listWgt = new QListWidget();
@@ -60,8 +61,8 @@ ServerDirExplorer::ServerDirExplorer(QWidget *parent)
     vlay->addWidget(listWgt);
 
 //directory settings
-
     //TODO
+    listDir("/");
 
     this->setLayout(vlay);
 
@@ -85,7 +86,17 @@ void ServerDirExplorer::closeEvent(QCloseEvent *event)
 
 void ServerDirExplorer::listDir(const QString &path)
 {
+    QSettings settings(CONFILE, QSettings::IniFormat);
+    socket->connectToHost(QHostAddress(settings.value(SERVERADDRESS, "127.0.0.1").toString()), settings.value(SERVERPORT, 56565).toInt());
 
+    QByteArray req;
+    QDataStream s(&req, QIODevice::ReadWrite);
+
+    if (!authorized) authorization(settings.value(LOGIN).toString(), settings.value(PASSWORD).toString());
+
+    s << Authorized << ClientAskedDirList << path;
+
+    socket->sendData(req);
 }
 
 
@@ -97,6 +108,59 @@ void ServerDirExplorer::fillListWidget(const QStringList &list)
     {
         listWgt->addItem(dir);
     }
+}
+
+
+void ServerDirExplorer::authorization(const QString &login, const QString &password)
+{
+    QByteArray req;
+    QDataStream s(&req, QIODevice::ReadWrite);
+
+    s << Authorization << login << password;
+
+    QSettings settings(CONFILE, QSettings::IniFormat);
+
+    if (socket->tcpSocket()->state() != QTcpSocket::ConnectingState
+            ||
+        socket->tcpSocket()->state() != QTcpSocket::ConnectedState)
+            socket->connectToHost(QHostAddress(settings.value(SERVERADDRESS, "127.0.0.1").toString()), settings.value(SERVERPORT, 56565).toInt());
+
+    socket->sendData(req);
+}
+
+
+void ServerDirExplorer::parseData(const QByteArray &bytes)
+{
+    QByteArray data = bytes;
+    QDataStream stream(&data, QIODevice::ReadWrite);
+
+    int code;
+    stream >> code;
+
+    switch(code)
+    {
+        case AuthorizationPassed:
+        {
+            authorized = true;
+        }
+
+
+        case AuthorizationFailed:
+        {
+            authorized = false;
+        }
+
+
+        case DirExists:
+        {
+            QStringList s_list;
+            stream >> s_list;
+            fillListWidget(s_list);
+        }
+
+
+    }
+
 }
 
 

@@ -57,6 +57,8 @@ void RegWidget::on_dataReceived(const QByteArray &data)
     if (code == RegistrationPassed) QMessageBox::information(this, "Registration", "Registration passed!");
     if (code == RegistrationFailed) QMessageBox::warning(this, "Registration", QString("Registration failed! Probably the username called \"%1\" allready exists. Try another username.").arg(loginLine->text()) );
 
+    passwordLine->clear();
+
     this->setEnabled(true);
 }
 

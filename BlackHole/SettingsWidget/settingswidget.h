@@ -26,6 +26,9 @@ class SettingsWidget : public QWidget
 {
     Q_OBJECT
 
+protected:
+    RegWidget *regWgt = nullptr;
+
     QLineEdit *addressLine,
               *loginLine,
               *pswrdLine,

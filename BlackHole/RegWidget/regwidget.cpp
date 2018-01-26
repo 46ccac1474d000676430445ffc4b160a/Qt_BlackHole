@@ -44,7 +44,6 @@ RegWidget::RegWidget(QWidget *parent) :
 
     this->setGeometry(x, y, width(), height());
     this->setAttribute(Qt::WA_DeleteOnClose);
-	this->show();
 }
 
 
@@ -54,7 +53,9 @@ void RegWidget::on_dataReceived(const QByteArray &data)
     QDataStream s(&bytes, QIODevice::ReadWrite);
     int code;
     s >> code;
-    qDebug() << ((code == RegistrationPassed) ? "RegPass" : "RegFailed");
+
+    if (code == RegistrationPassed) QMessageBox::information(this, "Registration", "Registration passed!");
+    if (code == RegistrationFailed) QMessageBox::warning(this, "Registration", QString("Registration failed! Probably the username called \"%1\" allready exists. Try another username.").arg(loginLine->text()) );
 
     this->setEnabled(true);
 }

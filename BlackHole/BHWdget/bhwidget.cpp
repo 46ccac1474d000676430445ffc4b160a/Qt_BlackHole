@@ -62,7 +62,12 @@ void BHWidget::on_showWgt()
 
 void BHWidget::on_showSettings()
 {
-    new SettingsWidget(this);
+    if (setWgt == nullptr)
+    {
+        setWgt = new SettingsWidget(this);
+        connect(setWgt, &SettingsWidget::destroyed, [=](){setWgt = nullptr;});
+    }
+    setWgt->show();
 }
 
 

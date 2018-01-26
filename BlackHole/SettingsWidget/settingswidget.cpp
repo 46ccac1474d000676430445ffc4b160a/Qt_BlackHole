@@ -84,7 +84,6 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setFixedSize(sizeHint());
     this->setWindowTitle("Black Hole settings");
-    this->show();
 }
 
 
@@ -113,7 +112,12 @@ void SettingsWidget::setParamsFromSettings()
 
 void SettingsWidget::on_regBut()
 {
-    new RegWidget(this);
+    if (regWgt == nullptr)
+    {
+        regWgt = new RegWidget(this);
+        connect(regWgt, &RegWidget::destroyed, [=](){regWgt = nullptr;});
+    }
+    regWgt->show();
 }
 
 

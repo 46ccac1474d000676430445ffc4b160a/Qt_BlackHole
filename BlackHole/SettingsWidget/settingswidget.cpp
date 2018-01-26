@@ -2,11 +2,8 @@
 
 
 SettingsWidget::SettingsWidget(QWidget *parent) :
-    QWidget(parent, Qt::Tool)
+    QWidget(parent, Qt::Window)
 {
-    QSettings settings(CONFILE, QSettings::IniFormat);
-
-
     //address line edit
     addressLine = new QLineEdit();
 
